@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Random;
 
 public class CartonDeBingo {
     private int[][] numeros;
@@ -12,6 +13,38 @@ public class CartonDeBingo {
         this.jugadorAsignado = null;
     }
 
+    public void generarCarton() {
+        Random rand = new Random();
+        int[][] numerosCarton = new int[5][5];
+
+        for (int columna = 0; columna < 5; columna++) {
+            int min = columna * 15 + 1; // Mínimo valor de la columna actual.
+            int max = min + 14; // Máximo valor de la columna actual.
+
+            for (int fila = 0; fila < 5; fila++) {
+                int numero;
+                do {
+                    numero = rand.nextInt(max - min + 1) + min;
+                } while (existeNumeroEnCarton(numerosCarton, numero));
+
+                numerosCarton[fila][columna] = numero;
+            }
+        }
+
+        this.numeros = numerosCarton;
+    }
+
+    // Verifica si un número ya existe en el cartón.
+    private boolean existeNumeroEnCarton(int[][] numerosCarton, int numero) {
+        for (int fila = 0; fila < 5; fila++) {
+            for (int columna = 0; columna < 5; columna++) {
+                if (numerosCarton[fila][columna] == numero) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public void setNumeros(int[][] numeros) {
         // Lógica para asignar los números proporcionados al cartón.
         if (numeros.length == 5 && numeros[0].length == 5) {

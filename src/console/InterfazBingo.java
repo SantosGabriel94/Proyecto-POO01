@@ -1,13 +1,24 @@
 package console;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import model.Jugador;
+import model.PartidaDeBingo;
+import model.RegistroDePartidas;
+import model.TipoPartida;
+
 public class InterfazBingo {
+
+    // Cargar los datos de la partida actual de bingo que está almacenada en la base de datos de la aplicación.
+    RegistroDePartidas registroPartidas = new RegistroDePartidas();
+    PartidaDeBingo partida = new PartidaDeBingo(TipoPartida.CARTON_LLENO, registroPartidas.getPartidas().size() + 1);
+    ArrayList<Jugador> jugadores = partida.getJugadores();
 
     public void mostrarMenu() {
         Scanner scanner = new Scanner(System.in);
         int opcion;
-
+        
         do {
             clearConsole();
             System.out.println("Sistema de Gestión de Bingos");
@@ -87,8 +98,23 @@ public class InterfazBingo {
     }
 
     private void generarCartones() {
+        // Solicita la cantidad de cartones al usuario
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese la cantidad de cartones a generar: ");
+        int cantidad = scanner.nextInt();
         // Implementar lógica para generar cartones.
         System.out.println("Generando cartones...");
+
+        try {
+            // Genera los cartones usando el gestor de bingos
+            partida.generarCartones(cantidad);
+        } catch (Exception e) {
+            System.err.println("Error al generar cartones: " + e.getMessage());
+        }
+        
+    
+        // Muestra un mensaje de confirmación
+        System.out.println(cantidad + " cartones generados con éxito.");
     }
 
     private void verCarton() {

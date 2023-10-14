@@ -1,9 +1,17 @@
 package model;
 
+import java.io.File;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
+
 
 public class PartidaDeBingo {
     private int idPartida;
@@ -26,7 +34,67 @@ public class PartidaDeBingo {
         this.horaJuego = new Time(System.currentTimeMillis()); // Utilizamos la hora actual.
     }
 
-    // Getters para los atributos privados.
+    public void generarImagenesCartones(CartonDeBingo[] listaDeCartones) {
+        try {
+            for (CartonDeBingo carton : listaDeCartones) {
+                // Crear una nueva imagen en blanco con un tamaño adecuado (ajusta el tamaño según tus necesidades).
+                int width = 200; // Ancho de la imagen en píxeles.
+                int height = 200; // Alto de la imagen en píxeles.
+                BufferedImage imagenCarton = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+                // Obtener el contexto gráfico para dibujar en la imagen.
+                Graphics2D g = imagenCarton.createGraphics();
+
+                // Establecer un fondo blanco.
+                g.setColor(Color.WHITE);
+                g.fillRect(0, 0, width, height);
+
+                // Configurar fuente y color para los números.
+                g.setColor(Color.BLACK);
+                Font font = new Font("Arial", Font.PLAIN, 16);
+                g.setFont(font);
+
+                int[][] numeros = carton.getNumeros();
+                for (int fila = 0; fila < 5; fila++) {
+                    for (int columna = 0; columna < 5; columna++) {
+                        int numero = numeros[fila][columna];
+                        // Dibujar el número en la posición correspondiente.
+                        int x = columna * (width / 5);
+                        int y = fila * (height / 5) + 16; // Ajusta la posición vertical para centrar el número.
+                        g.drawString(String.valueOf(numero), x, y);
+                    }
+                }
+
+                // Dibujar el identificador único del cartón en el centro de la imagen.
+                int identificador = carton.getIdentificadorUnico();
+                int x = width / 2 - 20; // Ajusta la posición horizontal para centrar el identificador.
+                int y = height / 2 + 20; // Ajusta la posición vertical para centrar el identificador.
+                //g.drawString(identificador, x, y);
+
+                // Guardar la imagen en un archivo con el nombre del identificador único del cartón.
+                String nombreArchivo = identificador + ".png";
+                File archivo = new File(nombreArchivo);
+                ImageIO.write(imagenCarton, "png", archivo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    public void generarCartones(int cantidad) {
+        // Limpiar la lista de cartones existentes si es necesario.
+        cartones.clear();
+
+        for (int i = 0; i < cantidad; i++) {
+            CartonDeBingo carton = new CartonDeBingo();
+            // Genera un cartón y agrégalo a la lista de cartones.
+            carton.generarCarton();
+            cartones.add(carton);
+            carton.setIdentificadorUnico(i + 1);
+        }
+        generarImagenesCartones(cartones.toArray(new CartonDeBingo[cartones.size()]));
+    }
 
     /**
      * Starts a game session.
@@ -184,6 +252,10 @@ public class PartidaDeBingo {
             }
         }
         return null; // Si no se encuentra, retornamos null.
+    }
+
+    public ArrayList<Jugador> getJugadores() {
+        return this.jugadores;
     }
 }
 
