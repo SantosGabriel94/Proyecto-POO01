@@ -26,7 +26,10 @@ public class CartonDeBingo {
                 do {
                     numero = rand.nextInt(max - min + 1) + min;
                 } while (existeNumeroEnCarton(numerosCarton, numero));
-
+                if (fila == 2 && columna == 2){
+                    numerosCarton[fila][columna] = -1;
+                    continue;
+                }
                 numerosCarton[fila][columna] = numero;
             }
         }
@@ -205,5 +208,6 @@ public class CartonDeBingo {
     /**SET Method Propertie identificadorUnico*/
     public void setIdentificadorUnico(int identificadorUnico){
         this.identificadorUnico = identificadorUnico;
+        this.numeros[2][2] = identificadorUnico;
     }//end method setIdentificadorUnico
 }
