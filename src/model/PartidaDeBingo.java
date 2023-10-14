@@ -15,9 +15,9 @@ public class PartidaDeBingo {
     private Date fechaJuego;
     private Time horaJuego;
 
-    public PartidaDeBingo(TipoPartida pConfiguracionPartida) {
+    public PartidaDeBingo(TipoPartida pConfiguracionPartida, int pIdPartida) {
         // Inicializamos el ID de la partida, puedes asignar un valor adecuado.
-        this.idPartida = 0;
+        this.idPartida = pIdPartida;
         this.configuracionPartida = pConfiguracionPartida;
         this.numerosCantados = new ArrayList<>();
         this.jugadoresGanadores = new ArrayList<>();

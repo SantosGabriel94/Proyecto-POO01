@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class RegistroDePartidas {
-    private ArrayList<PartidaDeBingo> partidas;
+    private static ArrayList<PartidaDeBingo> partidas;
 
     public RegistroDePartidas() {
         partidas = new ArrayList<>();
