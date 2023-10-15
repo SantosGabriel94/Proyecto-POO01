@@ -102,6 +102,7 @@ public class InterfazBingo {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese la cantidad de cartones a generar: ");
         int cantidad = scanner.nextInt();
+        scanner.close();    
         // Implementar lógica para generar cartones.
         System.out.println("Generando cartones...");
 
