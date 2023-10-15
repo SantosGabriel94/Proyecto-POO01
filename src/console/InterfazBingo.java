@@ -1,24 +1,31 @@
 package console;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import model.Jugador;
+import model.Jugadores;
 import model.PartidaDeBingo;
 import model.RegistroDePartidas;
 import model.TipoPartida;
+import model.Cartones;
 
 public class InterfazBingo {
 
     // Cargar los datos de la partida actual de bingo que está almacenada en la base de datos de la aplicación.
     RegistroDePartidas registroPartidas = new RegistroDePartidas();
     PartidaDeBingo partida = new PartidaDeBingo(TipoPartida.CARTON_LLENO, registroPartidas.getPartidas().size() + 1);
-    ArrayList<Jugador> jugadores = partida.getJugadores();
+    Jugadores jugadores = new Jugadores();
+    Cartones cartones = new Cartones();
 
     public void mostrarMenu() {
         Scanner scanner = new Scanner(System.in);
         int opcion;
-        
+    
+        Jugador luisSoto = new Jugador("Luis Soto", "luis@gmail.com", "103250410");
+        Jugador manuelMurillo = new Jugador("Manuel Murillo", "manuel@gmail.com", "31025321");
+        jugadores.añadirJugador(luisSoto);
+        jugadores.añadirJugador(manuelMurillo);
+    
         do {
             clearConsole();
             System.out.println("Sistema de Gestión de Bingos");
@@ -31,56 +38,64 @@ public class InterfazBingo {
             System.out.println("7. Generar Estadísticas");
             System.out.println("8. Salir");
             System.out.print("Seleccione una opción: ");
+            
 
-            opcion = scanner.nextInt();
-
-            switch (opcion) {
-                case 1:
-                    clearConsole();
-                    generarCartones();
-                    sleep(5000);
-                    break;
-                case 2:
-                    clearConsole();
-                    verCarton();
-                    sleep(5000);
-                    break;
-                case 3:
-                    clearConsole();
-                    registrarJugador();
-                    sleep(5000);
-                    break;
-                case 4:
-                    clearConsole();
-                    enviarCartonAJugador();
-                    sleep(5000);
-                    break;
-                case 5:
-                    clearConsole();
-                    iniciarPartida();
-                    sleep(5000);
-                    break;
-                case 6:
-                    clearConsole();
-                    generarWordCloud();
-                    sleep(5000);
-                    break;
-                case 7:
-                    clearConsole();
-                    generarEstadisticas();
-                    sleep(5000);
-                    break;
-                case 8:
-                    System.out.println("Saliendo del sistema...");
-                    sleep(5000);
-                    break;
-                default:
-                    System.out.println("Opción no válida. Intente de nuevo.");
-                    sleep(2000);
-                    break;
+            try {
+                String input = scanner.nextLine();
+                opcion = Integer.parseInt(input);
+    
+                switch (opcion) {
+                    case 1:
+                        clearConsole();
+                        generarCartones();
+                        sleep(5000);
+                        break;
+                    case 2:
+                        clearConsole();
+                        verCarton();
+                        sleep(5000);
+                        break;
+                    case 3:
+                        clearConsole();
+                        registrarJugador();
+                        sleep(5000);
+                        break;
+                    case 4:
+                        clearConsole();
+                        enviarCartonAJugador();
+                        sleep(5000);
+                        break;
+                    case 5:
+                        clearConsole();
+                        iniciarPartida();
+                        sleep(5000);
+                        break;
+                    case 6:
+                        clearConsole();
+                        generarWordCloud();
+                        sleep(5000);
+                        break;
+                    case 7:
+                        clearConsole();
+                        generarEstadisticas();
+                        sleep(5000);
+                        break;
+                    case 8:
+                        System.out.println("Saliendo del sistema...");
+                        sleep(5000);
+                        break;
+                    default:
+                        System.out.println("Opción no válida. Intente de nuevo.");
+                        sleep(2000);
+                        break;
+                }
+            } catch (Exception e) {
+                System.err.println("Error al leer la opción. Asegúrate de ingresar un número válido.");
+                opcion = 0; // Reiniciamos la opción en caso de error.
+                scanner.nextLine(); // Limpiamos el búfer de entrada.
             }
         } while (opcion != 8);
-
+    
         scanner.close();
     }
 
@@ -102,13 +117,14 @@ public class InterfazBingo {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese la cantidad de cartones a generar: ");
         int cantidad = scanner.nextInt();
-        scanner.close();    
+        //scanner.next(); // Limpiamos el búfer de entrada.
+        //scanner.close();    
         // Implementar lógica para generar cartones.
         System.out.println("Generando cartones...");
 
         try {
             // Genera los cartones usando el gestor de bingos
-            partida.generarCartones(cantidad);
+            cartones.generarCartones(cantidad);
         } catch (Exception e) {
             System.err.println("Error al generar cartones: " + e.getMessage());
         }

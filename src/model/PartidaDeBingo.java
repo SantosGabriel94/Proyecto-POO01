@@ -1,170 +1,75 @@
 package model;
 
-import java.io.File;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
-import java.awt.FontMetrics;
 
 
 public class PartidaDeBingo {
     private int idPartida;
     private TipoPartida configuracionPartida;
     private ArrayList<Integer> numerosCantados;
-    private ArrayList<Jugador> jugadores;
-    private ArrayList<Jugador> jugadoresGanadores;
     private ArrayList<CartonDeBingo> cartones;
+    private ArrayList<Jugador> jugadoresGanadores;
     private Date fechaJuego;
     private Time horaJuego;
+    private boolean partidaFinalizada;
+    private CartonDeBingo cartonGanador;
 
     public PartidaDeBingo(TipoPartida pConfiguracionPartida, int pIdPartida) {
-        // Inicializamos el ID de la partida, puedes asignar un valor adecuado.
         this.idPartida = pIdPartida;
         this.configuracionPartida = pConfiguracionPartida;
         this.numerosCantados = new ArrayList<>();
+        this.cartones = new ArrayList<>(); // Agregamos la inicialización de la lista de cartones.
         this.jugadoresGanadores = new ArrayList<>();
-        this.cartones = new ArrayList<>();
-        this.fechaJuego = new Date(); // Utilizamos la fecha actual.
-        this.horaJuego = new Time(System.currentTimeMillis()); // Utilizamos la hora actual.
-    }
-
-    public void generarImagenesCartones(CartonDeBingo[] listaDeCartones) {
-        try {
-            for (CartonDeBingo carton : listaDeCartones) {
-                // Crear una nueva imagen con un tamaño de 300x200.
-                int width = 300;
-                int height = 400;
-                BufferedImage imagenCarton = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-    
-                // Obtener el contexto gráfico para dibujar en la imagen.
-                Graphics2D g = imagenCarton.createGraphics();
-    
-                // Establecer un fondo blanco para toda la imagen.
-                g.setColor(Color.WHITE);
-                g.fillRect(0, 0, width, height);
-
-                // Establecer el fondo de color azul claro para el encabezado.
-                g.setColor(new Color(173, 216, 230));
-                g.fillRect(0, 0, width, 30); // 30 píxeles para el encabezado.
-
-                // Pintar la celda de la columna 2 y fila 2 de amarillo claro.
-                g.setColor(new Color(255, 255, 153)); // Amarillo claro.
-                int cellWidth = width / 5;
-                int cellHeight = (height - 30) / 5;
-                int x = 2 * cellWidth;
-                int y = 2 * cellHeight + 30;
-                g.fillRect(x, y, cellWidth, cellHeight);
-
-                // Dibujar un marco negro alrededor de la imagen.
-                g.setColor(new Color(0, 0, 0));
-                g.drawRect(0, 0, width - 1, height - 1);
-
-                // Dibujar líneas divisorias.
-                g.setColor(Color.BLACK);
-                // Líneas verticales.
-                for (int i = 1; i < 5; i++) {
-                    int xLine = i * cellWidth;
-                    g.drawLine(xLine, 30, xLine, height);
-                }
-                // Líneas horizontales.
-                for (int i = 0; i < 5; i++) {
-                    int yLine = i * cellHeight + 30;
-                    g.drawLine(0, yLine, width, yLine);
-                }
-    
-                // Agregar la palabra "BINGO".
-                g.setColor(Color.BLACK);
-                g.setFont(new Font("Arial", Font.BOLD, 24));
-                g.drawString("BINGO", 110, 24);
-    
-                // Configurar fuente y color para los números.
-                g.setColor(Color.BLACK);
-                Font font = new Font("Arial", Font.BOLD, 20);
-                g.setFont(font);
-                FontMetrics fm = g.getFontMetrics();
-    
-                int[][] numeros = carton.getNumeros();
-                for (int fila = 0; fila < 5; fila++) {
-                    for (int columna = 0; columna < 5; columna++) {
-                        int numero = numeros[fila][columna];
-                        String numeroStr = String.valueOf(numero);
-                        int xNum = columna * (width / 5) + (width / 10) - fm.stringWidth(numeroStr) / 2;
-                        int yNum = 30 + fila * ((height - 30) / 5) + 50; // Ajusta la posición vertical para centrar el número.
-                        g.drawString(numeroStr, xNum, yNum);
-                    }
-                }
-    
-                // Guardar la imagen en un archivo con el nombre del identificador único del cartón.
-                int identificador = carton.getIdentificadorUnico();
-                String nombreArchivo = identificador + ".png";
-                String rutaCarpetaResources = "resources/";
-                File archivo = new File(rutaCarpetaResources,nombreArchivo);
-                ImageIO.write(imagenCarton, "png", archivo);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.fechaJuego = new Date();
+        this.horaJuego = new Time(System.currentTimeMillis());
+        this.partidaFinalizada = false; // Inicializamos como partida no finalizada.
+        this.cartonGanador = null; // Inicializamos el cartón ganador como nulo.
     }
     
-    
-
-    
-    public void generarCartones(int cantidad) {
-        // Limpiar la lista de cartones existentes si es necesario.
-        cartones.clear();
-
-        for (int i = 0; i < cantidad; i++) {
-            CartonDeBingo carton = new CartonDeBingo();
-            // Genera un cartón y agrégalo a la lista de cartones.
-            carton.generarCarton();
-            cartones.add(carton);
-            carton.setIdentificadorUnico(i + 1);
-        }
-        generarImagenesCartones(cartones.toArray(new CartonDeBingo[cartones.size()]));
-    }
 
     /**
      * Starts a game session.
      *
      * @return void
      */
-    public void iniciarPartida() {
+    public void iniciarPartida(ArrayList<Jugador> jugadores) {
         // Verificar que haya suficientes jugadores para iniciar una partida.
         if (jugadores.size() < 2) {
             System.out.println("No hay suficientes jugadores para iniciar una partida.");
             return;
         }
 
-        // Inicializar la lista de números cantados.
-        numerosCantados.clear();
+        /*
+        IniciarPartida(configuracionPartida, cartones):
+            Si la partidaActual no está finalizada:
+                Mostrar un mensaje de confirmación para continuar con la partida actual.
+                Si el usuario confirma continuar:
+                    Reiniciar la partida con la nueva configuración y cartones.
+                Si el usuario no confirma continuar:
+                    Finalizar la partida actual y luego iniciar una nueva partida con la configuración y cartones proporcionados.
+            Si la partidaActual está finalizada:
+                Iniciar una nueva partida con la configuración y cartones proporcionados.
 
-        // Comenzar a cantar números hasta que haya al menos un cartón ganador.
-        while (true) {
-            // Generar un número aleatorio entre 1 y 75.
-            int numeroCantado = generarNumeroAleatorio();
+         */
+    }
 
-            // Agregar el número a la lista de números cantados.
-            numerosCantados.add(numeroCantado);
+    private void finalizarPartida() {
+        // Finaliza la partida.
+        System.out.println("La partida ha finalizado.");
 
-            // Verificar si hay algún cartón ganador bajo la configuración actual.
-            boolean hayGanador = verificarCartonesGanadores(numeroCantado);
-
-            if (hayGanador) {
-                // Anunciar a los jugadores ganadores.
-                anunciarGanadores();
-                break; // Terminar la partida si hay ganadores.
-            }
-        }
-
-        // Finalizar la partida.
-        finalizarPartida();
+        /*
+        finalizarPartida(cartonGanador, numerosCantados):
+            Asignar el cartón ganador a la partidaActual.
+            Asignar la lista de números cantados a la partidaActual.
+            Marcar la partida como finalizada.
+            Identificar los jugadores ganadores comparando los cartones con el cartón ganador.
+            Mostrar a los jugadores ganadores y los premios si los hay.
+            Actualizar la lista de partidas jugadas.
+            Limpiar la lista de cartones utilizados en la partida.
+        */
     }
 
     /**
@@ -177,54 +82,111 @@ public class PartidaDeBingo {
         return new Random().nextInt(75) + 1;
     }
 
-    private boolean verificarCartonesGanadores(int numeroCantado) {
-        // Variable para rastrear si hay al menos un ganador.
-        boolean hayGanador = false;
-
+    public ArrayList<Integer> verificarCartonesGanadores(ArrayList<CartonDeBingo> cartones, ArrayList<Integer> numerosCantados, TipoPartida configuracionPartida) {
+        ArrayList<Integer> cartonesGanadores = new ArrayList<>();
+    
         // Itera a través de la lista de cartones.
         for (CartonDeBingo carton : cartones) {
-            // Verifica si el cartón está marcado con el número cantado.
-            int[][] numerosCarton = carton.getNumeros();
-            for (int fila = 0; fila < 5; fila++) {
-                for (int columna = 0; columna < 5; columna++) {
-                    if (numerosCarton[fila][columna] == numeroCantado) {
-                        // Marca el número en el cartón.
-                        carton.marcarNumero(numeroCantado);
-
-                        // Verifica si el cartón es ganador bajo la configuración actual.
-                        if (esCartonGanador(carton)) {
-                            hayGanador = true;
-                            // Agrega el jugador ganador si el cartón está asignado a un jugador.
-                            Jugador jugadorGanador = carton.getJugadorAsignado();
-                            if (jugadorGanador != null) {
-                                jugadoresGanadores.add(jugadorGanador);
-                            }
-                        }
-                    }
-                }
+            // Verifica si el cartón es ganador bajo la configuración actual.
+            if (esCartonGanador(carton, numerosCantados, configuracionPartida)) {
+                // Agrega el identificador del cartón ganador a la lista.
+                cartonesGanadores.add(carton.getIdentificadorUnico());
             }
         }
-
-        return hayGanador;
+    
+        return cartonesGanadores;
     }
 
-    private boolean esCartonGanador(CartonDeBingo carton) {
-        // Obtén la matriz de números del cartón.
-        int[][] numerosCarton = carton.getNumeros();
+    private boolean esCartonGanador(CartonDeBingo carton, ArrayList<Integer> numerosCantados, TipoPartida configuracionPartida) {
+        switch (configuracionPartida) {
+            case JUGAR_EN_X:
+                return esCartonGanadorEnX(carton, numerosCantados);
+            case CUATRO_ESQUINAS:
+                return esCartonGanadorCuatroEsquinas(carton, numerosCantados);
+            case CARTON_LLENO:
+                return esCartonGanadorCartonLleno(carton, numerosCantados);
+            case JUGAR_EN_Z:
+                return esCartonGanadorEnZ(carton, numerosCantados);
+            default:
+                // Manejar otros casos de configuración aquí.
+                return false;
+        }
+    }
 
-        // Verifica si todos los números en el cartón están marcados.
+    private boolean esCartonGanadorEnX(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
+        int[][] numerosCarton = carton.getNumeros();
+    
+        // Verificar la diagonal principal (de izquierda a derecha).
+        boolean diagonalPrincipalCompleta = true;
+        for (int i = 0; i < 5; i++) {
+            if (!numerosCantados.contains(numerosCarton[i][i])) {
+                diagonalPrincipalCompleta = false;
+                break;
+            }
+        }
+    
+        // Verificar la diagonal secundaria (de derecha a izquierda).
+        boolean diagonalSecundariaCompleta = true;
+        for (int i = 0; i < 5; i++) {
+            if (!numerosCantados.contains(numerosCarton[i][4 - i])) {
+                diagonalSecundariaCompleta = false;
+                break;
+            }
+        }
+    
+        // El cartón es ganador si ambas diagonales están completas.
+        return diagonalPrincipalCompleta && diagonalSecundariaCompleta;
+    }
+    
+    
+    private boolean esCartonGanadorCuatroEsquinas(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
+        int[][] numerosCarton = carton.getNumeros();
+    
+        // Verificar si las cuatro esquinas están en la lista de números cantados.
+        boolean esquinaSuperiorIzquierda = numerosCantados.contains(numerosCarton[0][0]);
+        boolean esquinaSuperiorDerecha = numerosCantados.contains(numerosCarton[0][4]);
+        boolean esquinaInferiorIzquierda = numerosCantados.contains(numerosCarton[4][0]);
+        boolean esquinaInferiorDerecha = numerosCantados.contains(numerosCarton[4][4]);
+    
+        // El cartón es ganador si todas las esquinas están en la lista de números cantados.
+        return esquinaSuperiorIzquierda && esquinaSuperiorDerecha && esquinaInferiorIzquierda && esquinaInferiorDerecha;
+    }
+    
+    
+    private boolean esCartonGanadorCartonLleno(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
+        int[][] numerosCarton = carton.getNumeros();
+    
+        // Itera a través de la matriz de números del cartón.
         for (int fila = 0; fila < 5; fila++) {
             for (int columna = 0; columna < 5; columna++) {
-                if (numerosCarton[fila][columna] != -1) {
-                    // Si encuentra un número no marcado, el cartón no es ganador.
-                    return false;
+                int numero = numerosCarton[fila][columna];
+    
+                // Verifica si el número del cartón no está en la lista de números cantados.
+                if (!numerosCantados.contains(numero)) {
+                    return false; // Si encuentra un número no cantado, el cartón no es ganador.
                 }
             }
         }
-
-        // Si todos los números están marcados, el cartón es ganador.
+    
+        // Si todos los números del cartón están en la lista de números cantados, el cartón es ganador.
         return true;
     }
+    
+    
+    private boolean esCartonGanadorEnZ(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
+        int[][] numerosCarton = carton.getNumeros();
+    
+        // Verifica si los números en las esquinas y en el centro están en la lista de números cantados.
+        boolean esquinaSuperiorIzquierda = numerosCantados.contains(numerosCarton[0][0]);
+        boolean esquinaSuperiorDerecha = numerosCantados.contains(numerosCarton[0][4]);
+        boolean esquinaInferiorIzquierda = numerosCantados.contains(numerosCarton[4][0]);
+        boolean esquinaInferiorDerecha = numerosCantados.contains(numerosCarton[4][4]);
+        boolean centro = numerosCantados.contains(numerosCarton[2][2]);
+    
+        // El cartón es ganador en el patrón "Jugar en Z" si todas las posiciones están en la lista de números cantados.
+        return esquinaSuperiorIzquierda && esquinaSuperiorDerecha && esquinaInferiorIzquierda && esquinaInferiorDerecha && centro;
+    }
+    
 
     private void anunciarGanadores() {
         // Anuncia a los jugadores ganadores.
@@ -239,57 +201,5 @@ public class PartidaDeBingo {
         }
     }
 
-    private void finalizarPartida() {
-        // Finaliza la partida.
-        System.out.println("La partida ha finalizado.");
-
-        // Registra la partida en el historial o registro de partidas.
-        RegistroDePartidas registroPartidas = new RegistroDePartidas();
-        registroPartidas.agregarPartida(this);
-
-        // Limpia la lista de jugadores ganadores y números cantados.
-        jugadoresGanadores.clear();
-        numerosCantados.clear();
-    }
-
-    public void verificarCartones(ArrayList<CartonDeBingo> cartones, int numeroCantado) {
-        // Itera a través de la lista de cartones.
-        for (CartonDeBingo carton : cartones) {
-            // Obtiene la matriz de números del cartón.
-            int[][] numerosCarton = carton.getNumeros();
-
-            // Verifica si el número cantado está presente en el cartón.
-            for (int fila = 0; fila < 5; fila++) {
-                for (int columna = 0; columna < 5; columna++) {
-                    if (numerosCarton[fila][columna] == numeroCantado) {
-                        // Marca el número en el cartón.
-                        carton.marcarNumero(numeroCantado);
-
-                        // Verifica si el cartón es ganador bajo la configuración actual.
-                        if (esCartonGanador(carton)) {
-                            // Agrega el jugador ganador si el cartón está asignado a un jugador.
-                            Jugador jugadorGanador = carton.getJugadorAsignado();
-                            if (jugadorGanador != null) {
-                                jugadoresGanadores.add(jugadorGanador);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    public CartonDeBingo buscarCartonPorIdentificador(int identificador) {
-        for (CartonDeBingo carton : cartones) {
-            if (carton.getIdentificadorUnico() == identificador) {
-                return carton; // Si se encuentra el cartón, lo retornamos.
-            }
-        }
-        return null; // Si no se encuentra, retornamos null.
-    }
-
-    public ArrayList<Jugador> getJugadores() {
-        return this.jugadores;
-    }
 }
 

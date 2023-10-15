@@ -14,7 +14,7 @@ public class RegistroDePartidas {
     }
 
     public void setPartidas(ArrayList<PartidaDeBingo> partidas) {
-        this.partidas = partidas;
+        RegistroDePartidas.partidas = partidas;
     }
 
     public void agregarPartida(PartidaDeBingo partida) {
