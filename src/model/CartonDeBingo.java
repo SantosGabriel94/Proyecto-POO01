@@ -10,7 +10,7 @@ public class CartonDeBingo {
     public CartonDeBingo() {
         this.numeros = new int[5][5];
         this.identificadorUnico = 0;
-        this.jugadorAsignado = null;
+        this.jugadorAsignado = new Jugador("Sin asignar", "Sin correo", "0000000");;
     }
 
     public void generarCarton() {

@@ -1,12 +1,21 @@
 package console;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import java.awt.image.BufferedImage;
 import model.Jugador;
 import model.Jugadores;
 import model.PartidaDeBingo;
 import model.RegistroDePartidas;
 import model.TipoPartida;
+import model.CartonDeBingo;
 import model.Cartones;
 
 public class InterfazBingo {
@@ -25,6 +34,7 @@ public class InterfazBingo {
         Jugador manuelMurillo = new Jugador("Manuel Murillo", "manuel@gmail.com", "31025321");
         jugadores.añadirJugador(luisSoto);
         jugadores.añadirJugador(manuelMurillo);
+        cartones.generarCartones(5);
     
         do {
             clearConsole();
@@ -48,41 +58,41 @@ public class InterfazBingo {
                     case 1:
                         clearConsole();
                         generarCartones();
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     case 2:
                         clearConsole();
                         verCarton();
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     case 3:
                         clearConsole();
                         registrarJugador();
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     case 4:
                         clearConsole();
                         enviarCartonAJugador();
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     case 5:
                         clearConsole();
                         iniciarPartida();
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     case 6:
                         clearConsole();
                         generarWordCloud();
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     case 7:
                         clearConsole();
                         generarEstadisticas();
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     case 8:
                         System.out.println("Saliendo del sistema...");
-                        sleep(5000);
+                        sleep(2000);
                         break;
                     default:
                         System.out.println("Opción no válida. Intente de nuevo.");
@@ -132,11 +142,87 @@ public class InterfazBingo {
     
         // Muestra un mensaje de confirmación
         System.out.println(cantidad + " cartones generados con éxito.");
+
+        ArrayList<Integer> identificadoresDisponibles = cartones.obtenerIdentificadoresDisponibles();
+        // Paso 2: Mostrar la lista de identificadores disponibles.
+        System.out.println("Identificadores de cartones disponibles:");
+        for (int identificador : identificadoresDisponibles) {
+            System.out.println(identificador);
+        }
     }
 
-    private void verCarton() {
-        // Implementar lógica para ver cartón.
-        System.out.println("Mostrando cartón...");
+    public void verCarton() {
+        // Paso 1: Obtener la lista de identificadores de cartones disponibles.
+        ArrayList<Integer> identificadoresDisponibles = cartones.obtenerIdentificadoresDisponibles();
+
+        if (identificadoresDisponibles.isEmpty()) {
+            System.out.println("No hay cartones disponibles para mostrar. Lista vacia.");
+            return;
+        }
+
+        // Paso 2: Mostrar la lista de identificadores disponibles.
+        System.out.println("Identificadores de cartones disponibles:");
+        for (int identificador : identificadoresDisponibles) {
+            System.out.println(identificador);
+        }
+
+        // Paso 3: Solicitar al usuario que ingrese el identificador del cartón.
+        Scanner scanner = new Scanner(System.in);
+        int identificadorCarton;
+        
+        while (true) {
+            System.out.print("Ingrese el identificador del cartón que desea ver: ");
+            if (scanner.hasNextInt()) {
+                identificadorCarton = scanner.nextInt();
+                if (identificadoresDisponibles.contains(identificadorCarton)) {
+                    break; // Sal del bucle si el identificador es válido.
+                } else {
+                    System.out.println("Identificador no válido. Intente de nuevo.");
+                }
+            } else {
+                System.out.println("Entrada no válida. Ingrese un número.");
+                scanner.next(); // Limpiar el búfer de entrada.
+            }
+        }
+
+        // Paso 4: Mostrar la imagen y la información del cartón seleccionado.
+        verCarton(identificadorCarton);
+    }
+
+    public void verCarton(int identificadorCarton) {
+
+
+        // Obtén la URL de la imagen del cartón (asumiendo que la carpeta "resources" está en la raíz del proyecto).
+        String rutaImagenCarton = "resources/" + identificadorCarton + ".png";
+        
+        // Carga y muestra la imagen utilizando ImageIO (asegúrate de manejar excepciones).
+        try {
+            BufferedImage imagenCarton = ImageIO.read(new File(rutaImagenCarton));
+            if (imagenCarton != null) {
+                // Muestra la imagen.
+                JFrame frame = new JFrame("Cartón de Bingo");
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.add(new JLabel(new ImageIcon(imagenCarton)));
+                frame.pack();
+                frame.setVisible(true);
+                
+                // Verifica si el cartón tiene un jugador asignado y muestra su información.
+                CartonDeBingo carton = cartones.buscarCartonPorIdentificador(identificadorCarton);
+                Jugador jugador = carton.getJugadorAsignado();
+                if (jugador != null) {
+                    System.out.println("Este cartón está asignado a:");
+                    System.out.println("Nombre: " + jugador.getNombre());
+                    System.out.println("Cédula: " + jugador.getCedula());
+                    System.out.println("Correo: " + jugador.getCorreoElectronico());
+                } else {
+                    System.out.println("Este cartón no está asignado a ningún jugador.");
+                }
+            } else {
+                System.out.println("No se pudo cargar la imagen del cartón.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void registrarJugador() {

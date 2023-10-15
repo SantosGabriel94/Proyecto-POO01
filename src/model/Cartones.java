@@ -141,6 +141,18 @@ public class Cartones {
         return null; // Si no se encuentra, retornamos null.
     }
 
-
+    public ArrayList<Integer> obtenerIdentificadoresDisponibles() {
+        ArrayList<Integer> identificadoresDisponibles = new ArrayList<>();
+        
+        // Itera sobre la lista de cartones y agrega los identificadores no asignados a jugadores.
+        for (CartonDeBingo carton : cartones) {
+            if (carton.getJugadorAsignado() != null) {
+                identificadoresDisponibles.add(carton.getIdentificadorUnico());
+            }
+        }
+        
+        return identificadoresDisponibles;
+    }
+    
     
 }

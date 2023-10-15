@@ -23,4 +23,5 @@ public class Jugador {
     public String getCedula() {
         return cedula;
     }
+
 }
