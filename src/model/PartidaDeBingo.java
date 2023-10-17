@@ -3,193 +3,122 @@ package model;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
-
+import java.util.Scanner;
 
 public class PartidaDeBingo {
     private int idPartida;
     private TipoPartida configuracionPartida;
-    private ArrayList<Integer> numerosCantados;
-    private ArrayList<CartonDeBingo> cartones;
-    private ArrayList<Jugador> jugadoresGanadores;
-    private Date fechaJuego;
-    private Time horaJuego;
+    private double montoPremio;
+    private List<Integer> numerosCantados = new ArrayList<>();
+    private List<CartonDeBingo> cartones = new ArrayList<>();
+    private List<Jugador> jugadoresGanadores = new ArrayList<>();
     private boolean partidaFinalizada;
     private CartonDeBingo cartonGanador;
 
     public PartidaDeBingo(TipoPartida pConfiguracionPartida, int pIdPartida) {
         this.idPartida = pIdPartida;
         this.configuracionPartida = pConfiguracionPartida;
-        this.numerosCantados = new ArrayList<>();
-        this.cartones = new ArrayList<>(); // Agregamos la inicialización de la lista de cartones.
-        this.jugadoresGanadores = new ArrayList<>();
-        this.fechaJuego = new Date();
-        this.horaJuego = new Time(System.currentTimeMillis());
-        this.partidaFinalizada = false; // Inicializamos como partida no finalizada.
-        this.cartonGanador = null; // Inicializamos el cartón ganador como nulo.
+        this.partidaFinalizada = false;
+        this.cartonGanador = null;
+        this.montoPremio = 0.0;
     }
-    
 
-    /**
-     * Starts a game session.
-     *
-     * @return void
-     */
-    public void iniciarPartida(ArrayList<Jugador> jugadores) {
-        // Verificar que haya suficientes jugadores para iniciar una partida.
+    public void iniciarPartida(List<Jugador> jugadores, List<CartonDeBingo> nuevosCartones) {
         if (jugadores.size() < 2) {
             System.out.println("No hay suficientes jugadores para iniciar una partida.");
             return;
         }
 
-        /*
-        IniciarPartida(configuracionPartida, cartones):
-            Si la partidaActual no está finalizada:
-                Mostrar un mensaje de confirmación para continuar con la partida actual.
-                Si el usuario confirma continuar:
-                    Reiniciar la partida con la nueva configuración y cartones.
-                Si el usuario no confirma continuar:
-                    Finalizar la partida actual y luego iniciar una nueva partida con la configuración y cartones proporcionados.
-            Si la partidaActual está finalizada:
-                Iniciar una nueva partida con la configuración y cartones proporcionados.
-
-         */
+        if (!partidaFinalizada) {
+            System.out.print("¿Desea continuar con la partida actual? (Sí/No): ");
+            Scanner scanner = new Scanner(System.in);
+            String respuesta = scanner.next();
+            if (respuesta.equalsIgnoreCase("Sí")) {
+                System.out.println("Continuando con la partida actual.");
+            } else {
+                finalizarPartida();
+                iniciarNuevaPartida(nuevosCartones);
+            }
+        } else {
+            iniciarNuevaPartida(nuevosCartones);
+        }
     }
 
-    private void finalizarPartida() {
-        // Finaliza la partida.
-        System.out.println("La partida ha finalizado.");
-
-        /*
-        finalizarPartida(cartonGanador, numerosCantados):
-            Asignar el cartón ganador a la partidaActual.
-            Asignar la lista de números cantados a la partidaActual.
-            Marcar la partida como finalizada.
-            Identificar los jugadores ganadores comparando los cartones con el cartón ganador.
-            Mostrar a los jugadores ganadores y los premios si los hay.
-            Actualizar la lista de partidas jugadas.
-            Limpiar la lista de cartones utilizados en la partida.
-        */
+    private void reiniciarVariables() {
+        numerosCantados.clear();
+        jugadoresGanadores.clear();
+        cartonGanador = null;
+        montoPremio = 0.0;
     }
 
-    /**
-     * Generates a random number between 1 and 75.
-     *
-     * @return the generated random number
-     */
-    private int generarNumeroAleatorio() {
-        // Genera un número aleatorio entre 1 y 75.
-        return new Random().nextInt(75) + 1;
+    public void iniciarNuevaPartida(List<CartonDeBingo> nuevosCartones) {
+        reiniciarVariables();
+        cartones.addAll(nuevosCartones);
+        System.out.println("Iniciando una nueva partida de Bingo.");
+
+        while (!partidaFinalizada) {
+            int numeroAleatorio = generarNumeroAleatorio();
+            numerosCantados.add(numeroAleatorio);
+
+            List<CartonDeBingo> cartonesGanadores = verificarCartonesGanadores(configuracionPartida);
+
+            if (!cartonesGanadores.isEmpty()) {
+                finalizarPartida();
+            }
+
+            System.out.println("Números cantados: " + numerosCantados);
+        }
+
+        anunciarGanadores();
     }
 
-    public ArrayList<Integer> verificarCartonesGanadores(ArrayList<CartonDeBingo> cartones, ArrayList<Integer> numerosCantados, TipoPartida configuracionPartida) {
-        ArrayList<Integer> cartonesGanadores = new ArrayList<>();
+    public void finalizarPartida() {
+        asignarCartonGanador();
+        numerosCantados.addAll(obtenerNumerosCantados());
+        partidaFinalizada = true;
+        identificarJugadoresGanadores();
+        anunciarGanadores();
+        cartones.clear();
+    }
+
+    private List<CartonDeBingo> verificarCartonesGanadores(TipoPartida configuracionPartida) {
+        List<CartonDeBingo> cartonesGanadores = new ArrayList<>();
     
-        // Itera a través de la lista de cartones.
         for (CartonDeBingo carton : cartones) {
-            // Verifica si el cartón es ganador bajo la configuración actual.
-            if (esCartonGanador(carton, numerosCantados, configuracionPartida)) {
-                // Agrega el identificador del cartón ganador a la lista.
-                cartonesGanadores.add(carton.getIdentificadorUnico());
+            if (carton.verificarGanador(configuracionPartida)) {
+                cartonesGanadores.add(carton);
             }
         }
-    
+
         return cartonesGanadores;
     }
 
-    private boolean esCartonGanador(CartonDeBingo carton, ArrayList<Integer> numerosCantados, TipoPartida configuracionPartida) {
-        switch (configuracionPartida) {
-            case JUGAR_EN_X:
-                return esCartonGanadorEnX(carton, numerosCantados);
-            case CUATRO_ESQUINAS:
-                return esCartonGanadorCuatroEsquinas(carton, numerosCantados);
-            case CARTON_LLENO:
-                return esCartonGanadorCartonLleno(carton, numerosCantados);
-            case JUGAR_EN_Z:
-                return esCartonGanadorEnZ(carton, numerosCantados);
-            default:
-                // Manejar otros casos de configuración aquí.
-                return false;
+    private List<Integer> obtenerNumerosCantados() {
+        List<Integer> numeros = new ArrayList<>();
+        // Lógica para obtener los números cantados
+        return numeros;
+    }
+
+    private void identificarJugadoresGanadores() {
+        for (CartonDeBingo carton : cartones) {
+            if (carton.verificarGanador(configuracionPartida)) {
+                Jugador jugadorGanador = carton.getJugadorAsignado();
+                jugadoresGanadores.add(jugadorGanador);
+            }
         }
     }
 
-    private boolean esCartonGanadorEnX(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
-        int[][] numerosCarton = carton.getNumeros();
-    
-        // Verificar la diagonal principal (de izquierda a derecha).
-        boolean diagonalPrincipalCompleta = true;
-        for (int i = 0; i < 5; i++) {
-            if (!numerosCantados.contains(numerosCarton[i][i])) {
-                diagonalPrincipalCompleta = false;
-                break;
-            }
-        }
-    
-        // Verificar la diagonal secundaria (de derecha a izquierda).
-        boolean diagonalSecundariaCompleta = true;
-        for (int i = 0; i < 5; i++) {
-            if (!numerosCantados.contains(numerosCarton[i][4 - i])) {
-                diagonalSecundariaCompleta = false;
-                break;
-            }
-        }
-    
-        // El cartón es ganador si ambas diagonales están completas.
-        return diagonalPrincipalCompleta && diagonalSecundariaCompleta;
+    private int generarNumeroAleatorio() {
+        return new Random().nextInt(75) + 1;
     }
-    
-    
-    private boolean esCartonGanadorCuatroEsquinas(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
-        int[][] numerosCarton = carton.getNumeros();
-    
-        // Verificar si las cuatro esquinas están en la lista de números cantados.
-        boolean esquinaSuperiorIzquierda = numerosCantados.contains(numerosCarton[0][0]);
-        boolean esquinaSuperiorDerecha = numerosCantados.contains(numerosCarton[0][4]);
-        boolean esquinaInferiorIzquierda = numerosCantados.contains(numerosCarton[4][0]);
-        boolean esquinaInferiorDerecha = numerosCantados.contains(numerosCarton[4][4]);
-    
-        // El cartón es ganador si todas las esquinas están en la lista de números cantados.
-        return esquinaSuperiorIzquierda && esquinaSuperiorDerecha && esquinaInferiorIzquierda && esquinaInferiorDerecha;
+
+    private void asignarCartonGanador() {
+        // Lógica para asignar el cartón ganador.
     }
-    
-    
-    private boolean esCartonGanadorCartonLleno(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
-        int[][] numerosCarton = carton.getNumeros();
-    
-        // Itera a través de la matriz de números del cartón.
-        for (int fila = 0; fila < 5; fila++) {
-            for (int columna = 0; columna < 5; columna++) {
-                int numero = numerosCarton[fila][columna];
-    
-                // Verifica si el número del cartón no está en la lista de números cantados.
-                if (!numerosCantados.contains(numero)) {
-                    return false; // Si encuentra un número no cantado, el cartón no es ganador.
-                }
-            }
-        }
-    
-        // Si todos los números del cartón están en la lista de números cantados, el cartón es ganador.
-        return true;
-    }
-    
-    
-    private boolean esCartonGanadorEnZ(CartonDeBingo carton, ArrayList<Integer> numerosCantados) {
-        int[][] numerosCarton = carton.getNumeros();
-    
-        // Verifica si los números en las esquinas y en el centro están en la lista de números cantados.
-        boolean esquinaSuperiorIzquierda = numerosCantados.contains(numerosCarton[0][0]);
-        boolean esquinaSuperiorDerecha = numerosCantados.contains(numerosCarton[0][4]);
-        boolean esquinaInferiorIzquierda = numerosCantados.contains(numerosCarton[4][0]);
-        boolean esquinaInferiorDerecha = numerosCantados.contains(numerosCarton[4][4]);
-        boolean centro = numerosCantados.contains(numerosCarton[2][2]);
-    
-        // El cartón es ganador en el patrón "Jugar en Z" si todas las posiciones están en la lista de números cantados.
-        return esquinaSuperiorIzquierda && esquinaSuperiorDerecha && esquinaInferiorIzquierda && esquinaInferiorDerecha && centro;
-    }
-    
 
     private void anunciarGanadores() {
-        // Anuncia a los jugadores ganadores.
         if (!jugadoresGanadores.isEmpty()) {
             System.out.println("Jugadores ganadores:");
 
@@ -200,6 +129,4 @@ public class PartidaDeBingo {
             System.out.println("No hay jugadores ganadores en esta partida.");
         }
     }
-
 }
-

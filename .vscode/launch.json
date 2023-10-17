@@ -1,0 +1,77 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "BingoApp",
+            "request": "launch",
+            "mainClass": "BingoApp",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "EnviarCartonAJugador",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.EnviarCartonAJugador",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "GenerarCartones",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.GenerarCartones",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "GenerarEstadisticas",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.GenerarEstadisticas",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "GenerarWordCloud",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.GenerarWordCloud",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "IniciarPartida",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.IniciarPartida",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "MenuPrincipal",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.MenuPrincipal",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "RegistrarJugador",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.RegistrarJugador",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        },
+        {
+            "type": "java",
+            "name": "VerCartones",
+            "request": "launch",
+            "mainClass": "MenuPrincipal.VerCartones",
+            "projectName": "Proyecto-POO01_b91bc2b7"
+        }
+    ]
+}

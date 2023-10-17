@@ -1,16 +1,17 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Jugadores {
-    private static ArrayList<Jugador> jugadores;
+    private List<Jugador> jugadores = new ArrayList<>();
 
     public Jugadores() {
-        jugadores = new ArrayList<>();
+        // No se necesita inicializar la lista aquí, ya que se inicializa en la declaración.
     }
 
-    public void guardarJugadores() {
-        // guarda todos los jugadores en la BD
+    public void guardarJugadoresEnBD() {
+        // Lógica para guardar todos los jugadores en la base de datos.
     }
 
     public void añadirJugador(Jugador jugador) {
@@ -21,7 +22,17 @@ public class Jugadores {
         jugadores.remove(jugador);
     }
 
-    public ArrayList<Jugador> getJugadores() {
-        return Jugadores.jugadores;
+    public List<Jugador> getJugadores() {
+        return new ArrayList<>(jugadores); // Devuelve una copia de la lista para evitar modificaciones externas.
+    }
+
+    public Jugador buscarJugadorPorCedula(String cedula) {
+        for (Jugador jugador : jugadores) {
+            if (jugador.getCedula().equals(cedula)) {
+                return jugador; // Devuelve el jugador si se encuentra
+            }
+        }
+        return null; // Retorna null si no se encuentra ningún jugador con esa cédula
     }
 }
+

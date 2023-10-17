@@ -76,18 +76,19 @@ public class CartonDeBingo {
         // Si el número no se encuentra en el cartón, puedes lanzar una excepción o realizar alguna acción adicional.
     }
 
-    public boolean verificarGanador(String configuracionPartida) {
-        if (configuracionPartida.equalsIgnoreCase("Jugar en X")) {
-            return verificarGanadorX();
-        } else if (configuracionPartida.equalsIgnoreCase("Cuatro esquinas")) {
-            return verificarGanadorCuatroEsquinas();
-        } else if (configuracionPartida.equalsIgnoreCase("Cartón lleno")) {
-            return verificarGanadorCartonLleno();
-        } else if (configuracionPartida.equalsIgnoreCase("Jugar en Z")) {
-            return verificarGanadorZ();
-        } else {
-            // Manejar otros casos de configuración aquí.
-            return false;
+    public boolean verificarGanador(TipoPartida configuracionPartida) {
+        switch (configuracionPartida) {
+            case JUGAR_EN_X:
+                return verificarGanadorX();
+            case CUATRO_ESQUINAS:
+                return verificarGanadorCuatroEsquinas();
+            case CARTON_LLENO:
+                return verificarGanadorCartonLleno();
+            case JUGAR_EN_Z:
+                return verificarGanadorZ();
+            default:
+                // Manejar otros casos de configuración aquí.
+                return false;
         }
     }
 

@@ -3,6 +3,8 @@ package console;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -17,53 +19,55 @@ import model.RegistroDePartidas;
 import model.TipoPartida;
 import model.CartonDeBingo;
 import model.Cartones;
+import model.CorreoElectronico;
 
 public class InterfazBingo {
+    private RegistroDePartidas registroPartidas;
+    private PartidaDeBingo partida;
+    private Jugadores jugadores;
+    private Cartones cartones;
 
-    // Cargar los datos de la partida actual de bingo que está almacenada en la base de datos de la aplicación.
-    RegistroDePartidas registroPartidas = new RegistroDePartidas();
-    PartidaDeBingo partida = new PartidaDeBingo(TipoPartida.CARTON_LLENO, registroPartidas.getPartidas().size() + 1);
-    Jugadores jugadores = new Jugadores();
-    Cartones cartones = new Cartones();
+    public InterfazBingo() {
+        registroPartidas = new RegistroDePartidas();
+        partida = new PartidaDeBingo(TipoPartida.CARTON_LLENO, registroPartidas.getPartidas().size() + 1);
+        jugadores = new Jugadores();
+        cartones = new Cartones();
+    }
 
     public void mostrarMenu() {
         Scanner scanner = new Scanner(System.in);
         int opcion;
-    
-        Jugador luisSoto = new Jugador("Luis Soto", "luis@gmail.com", "103250410");
-        Jugador manuelMurillo = new Jugador("Manuel Murillo", "manuel@gmail.com", "31025321");
-        jugadores.añadirJugador(luisSoto);
-        jugadores.añadirJugador(manuelMurillo);
+
+        inicializarJugadores();
         cartones.generarCartones(5);
-    
+
         do {
             clearConsole();
             System.out.println("Sistema de Gestión de Bingos");
             System.out.println("1. Generar Cartones");
             System.out.println("2. Ver Cartón");
             System.out.println("3. Registrar Jugador");
-            System.out.println("4. Enviar Cartón a Jugador");
+            System.out.println("4. Asignar Jugador a Cartón");
             System.out.println("5. Iniciar Partida");
             System.out.println("6. Generar Word Cloud");
             System.out.println("7. Generar Estadísticas");
             System.out.println("8. Salir");
             System.out.print("Seleccione una opción: ");
-            
 
             try {
                 String input = scanner.nextLine();
                 opcion = Integer.parseInt(input);
-    
+
                 switch (opcion) {
                     case 1:
                         clearConsole();
                         generarCartones();
-                        sleep(2000);
+                        sleep(5000);
                         break;
                     case 2:
                         clearConsole();
                         verCarton();
-                        sleep(2000);
+                        sleep(6000);
                         break;
                     case 3:
                         clearConsole();
@@ -73,7 +77,7 @@ public class InterfazBingo {
                     case 4:
                         clearConsole();
                         enviarCartonAJugador();
-                        sleep(2000);
+                        sleep(5000);
                         break;
                     case 5:
                         clearConsole();
@@ -92,7 +96,7 @@ public class InterfazBingo {
                         break;
                     case 8:
                         System.out.println("Saliendo del sistema...");
-                        sleep(2000);
+                        sleep(1000);
                         break;
                     default:
                         System.out.println("Opción no válida. Intente de nuevo.");
@@ -105,7 +109,7 @@ public class InterfazBingo {
                 scanner.nextLine(); // Limpiamos el búfer de entrada.
             }
         } while (opcion != 8);
-    
+
         scanner.close();
     }
 
@@ -118,95 +122,97 @@ public class InterfazBingo {
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
-            // Handle the exception
+            e.printStackTrace();
         }
     }
 
+    private void inicializarJugadores() {
+        Jugador luisSoto = new Jugador("Luis Soto", "erickrobre46@gmail.com", "103250410");
+        Jugador manuelMurillo = new Jugador("Manuel Murillo", "erirodriguez@estudiantec.cr", "31025321");
+        Jugador erickRojas = new Jugador("Erick Rojas", "erick.rodriguez2@aiesec.net", "303250410");
+
+        jugadores.añadirJugador(luisSoto);
+        jugadores.añadirJugador(manuelMurillo);
+        jugadores.añadirJugador(erickRojas);
+    }
+
     private void generarCartones() {
-        // Solicita la cantidad de cartones al usuario
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese la cantidad de cartones a generar: ");
         int cantidad = scanner.nextInt();
-        //scanner.next(); // Limpiamos el búfer de entrada.
-        //scanner.close();    
-        // Implementar lógica para generar cartones.
-        System.out.println("Generando cartones...");
 
         try {
-            // Genera los cartones usando el gestor de bingos
             cartones.generarCartones(cantidad);
         } catch (Exception e) {
             System.err.println("Error al generar cartones: " + e.getMessage());
         }
-        
-    
-        // Muestra un mensaje de confirmación
+
         System.out.println(cantidad + " cartones generados con éxito.");
 
         ArrayList<Integer> identificadoresDisponibles = cartones.obtenerIdentificadoresDisponibles();
-        // Paso 2: Mostrar la lista de identificadores disponibles.
         System.out.println("Identificadores de cartones disponibles:");
         for (int identificador : identificadoresDisponibles) {
-            System.out.println(identificador);
+            if (identificador % 21 == 0) {
+                System.out.println();
+            }
+            System.out.print(" " + identificador + " ");
         }
     }
 
-    public void verCarton() {
-        // Paso 1: Obtener la lista de identificadores de cartones disponibles.
+    private void verCarton() {
         ArrayList<Integer> identificadoresDisponibles = cartones.obtenerIdentificadoresDisponibles();
 
         if (identificadoresDisponibles.isEmpty()) {
-            System.out.println("No hay cartones disponibles para mostrar. Lista vacia.");
+            System.out.println("No hay cartones disponibles para mostrar. Lista vacía.");
             return;
         }
 
-        // Paso 2: Mostrar la lista de identificadores disponibles.
         System.out.println("Identificadores de cartones disponibles:");
         for (int identificador : identificadoresDisponibles) {
-            System.out.println(identificador);
+            if (identificador % 21 == 0) {
+                System.out.println();
+            }
+            System.out.print(" " + identificador + " ");
         }
 
-        // Paso 3: Solicitar al usuario que ingrese el identificador del cartón.
+        int identificadorCarton = obtenerIdentificadorCarton(identificadoresDisponibles);
+        verCarton(identificadorCarton);
+    }
+
+    private int obtenerIdentificadorCarton(ArrayList<Integer> identificadoresDisponibles) {
         Scanner scanner = new Scanner(System.in);
         int identificadorCarton;
-        
+
         while (true) {
-            System.out.print("Ingrese el identificador del cartón que desea ver: ");
+            System.out.println("\nIngrese el identificador del cartón que desea ver: ");
             if (scanner.hasNextInt()) {
                 identificadorCarton = scanner.nextInt();
                 if (identificadoresDisponibles.contains(identificadorCarton)) {
-                    break; // Sal del bucle si el identificador es válido.
+                    break;
                 } else {
                     System.out.println("Identificador no válido. Intente de nuevo.");
                 }
             } else {
                 System.out.println("Entrada no válida. Ingrese un número.");
-                scanner.next(); // Limpiar el búfer de entrada.
+                scanner.next();
             }
         }
 
-        // Paso 4: Mostrar la imagen y la información del cartón seleccionado.
-        verCarton(identificadorCarton);
+        return identificadorCarton;
     }
 
-    public void verCarton(int identificadorCarton) {
-
-
-        // Obtén la URL de la imagen del cartón (asumiendo que la carpeta "resources" está en la raíz del proyecto).
+    private void verCarton(int identificadorCarton) {
         String rutaImagenCarton = "resources/" + identificadorCarton + ".png";
-        
-        // Carga y muestra la imagen utilizando ImageIO (asegúrate de manejar excepciones).
+
         try {
             BufferedImage imagenCarton = ImageIO.read(new File(rutaImagenCarton));
             if (imagenCarton != null) {
-                // Muestra la imagen.
                 JFrame frame = new JFrame("Cartón de Bingo");
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.add(new JLabel(new ImageIcon(imagenCarton)));
                 frame.pack();
                 frame.setVisible(true);
-                
-                // Verifica si el cartón tiene un jugador asignado y muestra su información.
+
                 CartonDeBingo carton = cartones.buscarCartonPorIdentificador(identificadorCarton);
                 Jugador jugador = carton.getJugadorAsignado();
                 if (jugador != null) {
@@ -226,28 +232,181 @@ public class InterfazBingo {
     }
 
     private void registrarJugador() {
-        // Implementar lógica para registrar jugadores.
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Registrando jugador...");
+        System.out.print("Ingrese el nombre del jugador: ");
+        String nombre = scanner.nextLine();
+
+        System.out.print("Ingrese el correo electrónico del jugador: ");
+        String correo = scanner.nextLine();
+
+        System.out.print("Ingrese la cédula del jugador: ");
+        String cedula = scanner.nextLine();
+
+        Jugador nuevoJugador = new Jugador(nombre, correo, cedula);
+        jugadores.añadirJugador(nuevoJugador);
+
+        System.out.println("Jugador registrado con éxito.");
     }
 
     private void enviarCartonAJugador() {
-        // Implementar lógica para enviar cartón a jugador.
-        System.out.println("Enviando cartón a jugador...");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese la cédula del jugador: ");
+        String cedula = scanner.nextLine();
+
+        Jugador jugador = jugadores.buscarJugadorPorCedula(cedula);
+
+        if (jugador == null) {
+            System.out.println("No se encontró un jugador con esa cédula.");
+            return;
+        }
+
+        System.out.print("Ingrese la cantidad de cartones a enviar: ");
+        int cantidadCartones;
+
+        try {
+            cantidadCartones = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Cantidad de cartones no válida. Debe ingresar un número entero.");
+            return;
+        }
+
+        ArrayList<Integer> identificadoresDisponibles = cartones.obtenerIdentificadoresDisponibles();
+        ArrayList<Integer> cartonesSinAsignar = obtenerCartonesSinAsignar(identificadoresDisponibles);
+
+        if (cartonesSinAsignar.isEmpty()) {
+            System.out.println("No hay cartones disponibles para enviar a este jugador.");
+            return;
+        }
+
+        if (cantidadCartones > cartonesSinAsignar.size()) {
+            System.out.println("No hay suficientes cartones disponibles para enviar la cantidad solicitada.");
+            return;
+        }
+
+        Collections.shuffle(cartonesSinAsignar);
+        List<Integer> cartonesAEnviar = cartonesSinAsignar.subList(0, cantidadCartones);
+
+        ArrayList<CartonDeBingo> cartonesEnviados = new ArrayList<>();
+
+        for (int identificador : cartonesAEnviar) {
+            CartonDeBingo carton = cartones.buscarCartonPorIdentificador(identificador);
+            carton.setJugadorAsignado(jugador);
+            cartonesEnviados.add(carton);
+        }
+
+        try {
+            StringBuilder cuerpoCorreo = new StringBuilder();
+            cuerpoCorreo.append("¡Hola ").append(jugador.getNombre()).append("!\n\n");
+            cuerpoCorreo.append("Adjunto encontrarás ").append(cantidadCartones).append(" cartones de bingo.\n\n");
+
+            CorreoElectronico correoElectronico = new CorreoElectronico();
+            correoElectronico.enviarCorreoConCartones(jugador.getCorreoElectronico(), "Cartones de Bingo",
+                    cuerpoCorreo.toString(), cartonesEnviados);
+
+            System.out.println("Se han enviado los cartones al jugador " + jugador.getNombre() + " a su dirección de correo: "
+                    + jugador.getCorreoElectronico());
+        } catch (Exception e) {
+            System.out.println("Se ha producido un error al enviar el correo electrónico.");
+            e.printStackTrace();
+        }
+    }
+
+    private ArrayList<Integer> obtenerCartonesSinAsignar(ArrayList<Integer> identificadoresDisponibles) {
+        ArrayList<Integer> cartonesSinAsignar = new ArrayList<>();
+
+        for (int identificador : identificadoresDisponibles) {
+            CartonDeBingo carton = cartones.buscarCartonPorIdentificador(identificador);
+
+            if (carton.getJugadorAsignado().getNombre().equals("Sin asignar")) {
+                cartonesSinAsignar.add(identificador);
+            }
+        }
+
+        return cartonesSinAsignar;
     }
 
     private void iniciarPartida() {
-        // Implementar lógica para iniciar partida.
         System.out.println("Iniciando partida...");
+        if (preguntarContinuarPartida()) {
+            obtenerConfiguracionYPremio();
+        }
+    }
+
+    private boolean preguntarContinuarPartida() {
+        boolean continuarPartida = false;
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("¿Desea continuar con la partida actual? (Sí/No): ");
+        String respuesta = scanner.nextLine();
+
+        if (respuesta.equalsIgnoreCase("Sí") || respuesta.equalsIgnoreCase("si")) {
+            continuarPartida = true;
+        }
+
+        return continuarPartida;
+    }
+
+    private void obtenerConfiguracionYPremio() {
+        Scanner scanner = new Scanner(System.in);
+        int configuracionJuego = 0;
+        double montoPremio = 0.0;
+        TipoPartida configuracionPartida = TipoPartida.CARTON_LLENO;
+
+        System.out.println("Seleccione la configuración de juego:");
+        System.out.println("1. Jugar en X");
+        System.out.println("2. Cuatro esquinas");
+        System.out.println("3. Cartón lleno");
+        System.out.println("4. Jugar en Z");
+
+        while (configuracionJuego < 1 || configuracionJuego > 4) {
+            System.out.print("Por favor, elija una opción válida: ");
+            if (scanner.hasNextInt()) {
+                configuracionJuego = scanner.nextInt();
+                switch (configuracionJuego) {
+                    case 1:
+                        configuracionPartida = TipoPartida.JUGAR_EN_X;
+                        break;
+                    case 2:
+                        configuracionPartida = TipoPartida.CUATRO_ESQUINAS;
+                        break;
+                    case 3:
+                        configuracionPartida = TipoPartida.CARTON_LLENO;
+                        break;
+                    case 4:
+                        configuracionPartida = TipoPartida.JUGAR_EN_Z;
+                        break;
+                    default:
+                        System.out.println("Selección no válida. Por favor, elija una opción válida.");
+                }
+            } else {
+                System.out.println("Entrada no válida. Ingrese un número entre 1 y 4.");
+                scanner.next();
+            }
+        }
+
+        while (montoPremio <= 0) {
+            System.out.print("Ingrese el monto del premio: ");
+            if (scanner.hasNextDouble()) {
+                montoPremio = scanner.nextDouble();
+                if (montoPremio <= 0) {
+                    System.out.println("El monto del premio debe ser un valor positivo. Por favor, ingrese un monto válido.");
+                }
+            } else {
+                System.out.println("Entrada no válida. Ingrese un monto válido.");
+                scanner.next();
+            }
+        }
+
+        // Aquí puedes usar las variables configuracionJuego y montoPremio según sea necesario.
     }
 
     private void generarWordCloud() {
-        // Implementar lógica para generar Word Cloud.
         System.out.println("Generando Word Cloud...");
     }
 
     private void generarEstadisticas() {
-        // Implementar lógica para generar estadísticas.
         System.out.println("Generando estadísticas...");
     }
 }
-

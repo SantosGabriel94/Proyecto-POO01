@@ -1,6 +1,5 @@
 package model;
 
-
 public class Jugador {
     private String nombre;
     private String correoElectronico;
@@ -23,5 +22,4 @@ public class Jugador {
     public String getCedula() {
         return cedula;
     }
-
 }

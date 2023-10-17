@@ -1,27 +1,24 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RegistroDePartidas {
-    private static ArrayList<PartidaDeBingo> partidas;
+    private List<PartidaDeBingo> partidas = new ArrayList<>();
 
     public RegistroDePartidas() {
-        partidas = new ArrayList<>();
+        // No es necesario inicializar la lista aquí, ya que se inicializa en la declaración.
     }
 
-    public ArrayList<PartidaDeBingo> getPartidas() {
-        return partidas;
-    }
-
-    public void setPartidas(ArrayList<PartidaDeBingo> partidas) {
-        RegistroDePartidas.partidas = partidas;
+    public List<PartidaDeBingo> getPartidas() {
+        return new ArrayList<>(partidas); // Devuelve una copia de la lista para evitar modificaciones externas.
     }
 
     public void agregarPartida(PartidaDeBingo partida) {
         partidas.add(partida);
     }
     
-    public static void cargarRegistroPartidas(){
-        int num = 0;
+    public void cargarRegistroPartidas() {
+        // Aquí puedes implementar la lógica para cargar el registro de partidas, si es necesario.
     }
 }
