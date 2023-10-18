@@ -4,7 +4,6 @@ import java.util.Properties;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Session;
-import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Transport;
@@ -14,16 +13,13 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
 import java.io.IOException;
 import java.util.ArrayList;
-import model.CartonDeBingo;
-import model.Jugador;
-import model.Cartones;
+
 
 public class CorreoElectronico {
     private String usuario;
@@ -41,6 +37,11 @@ public class CorreoElectronico {
         usuario = "proyecto1pooiis2023@gmail.com";
     }
 
+    /**
+     * Opens a session for sending email using the given properties, username, and password.
+     *
+     * @return          the opened session for sending email
+     */
     private Session abrirSesion() {
         Session sesion = Session.getInstance(propiedades,
                 new javax.mail.Authenticator() {
@@ -52,6 +53,14 @@ public class CorreoElectronico {
         return sesion;
     }
 
+    /**
+     * Sends an email with the given recipient, email subject, and email body.
+     *
+     * @param  destinatario      the recipient of the email
+     * @param  tituloCorreo      the subject of the email
+     * @param  cuerpo            the body of the email
+     * @return                   void
+     */
     public void enviarCorreo(String destinatario, String tituloCorreo, String cuerpo) {
         Session sesion = abrirSesion();
 
@@ -72,6 +81,14 @@ public class CorreoElectronico {
         }
     }
 
+    /**
+     * Sends an email with bingo cards attached.
+     *
+     * @param  destinatario     the recipient of the email
+     * @param  tituloCorreo     the subject of the email
+     * @param  cuerpo           the body of the email
+     * @param  cartones         the list of bingo cards to be attached
+     */
     public void enviarCorreoConCartones(String destinatario, String tituloCorreo, String cuerpo, ArrayList<CartonDeBingo> cartones) {
         Session sesion = abrirSesion();
         // Directorio temporal para guardar las imágenes de cartones
@@ -135,6 +152,12 @@ public class CorreoElectronico {
         }
     }
 
+    /**
+     * Deletes all files in the specified temporary directory.
+     *
+     * @param  directorioTemporal  the path to the temporary directory
+     * @return                    void
+     */
     private void eliminarArchivosTemporales(String directorioTemporal) {
         File directorio = new File(directorioTemporal);
         File[] archivos = directorio.listFiles();

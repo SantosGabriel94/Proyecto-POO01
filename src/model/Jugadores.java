@@ -26,6 +26,12 @@ public class Jugadores {
         return new ArrayList<>(jugadores); // Devuelve una copia de la lista para evitar modificaciones externas.
     }
 
+    /**
+     * Searches for a player by their ID number.
+     *
+     * @param  cedula  the ID number of the player
+     * @return         the player object if found, null otherwise
+     */
     public Jugador buscarJugadorPorCedula(String cedula) {
         for (Jugador jugador : jugadores) {
             if (jugador.getCedula().equals(cedula)) {

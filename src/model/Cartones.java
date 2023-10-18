@@ -16,10 +16,20 @@ public class Cartones {
         cartones = new ArrayList<>();
     }
 
+    /**
+     * Adds a CartonDeBingo to the list of cartones.
+     *
+     * @param  carton  the CartonDeBingo to be added
+     */
     public void añadirCarton(CartonDeBingo carton) {
         cartones.add(carton);
     }
 
+    /**
+     * Generates an image of a bingo card.
+     *
+     * @param  carton   The bingo card object to be used for generating the image.
+     */
     public void generarImagenCarton(CartonDeBingo carton) {
         try {
             // Crear una nueva imagen con un tamaño de 300x400.
@@ -96,6 +106,12 @@ public class Cartones {
         }
     }
 
+    /**
+     * Deletes all files in the "resources" folder.
+     *
+     * @param  None  This function does not have any parameters.
+     * @return None  This function does not return anything.
+     */
     public void limpiarCarpetaResources() {
         String rutaCarpetaResources = "resources";
         File carpetaResources = new File(rutaCarpetaResources);
@@ -113,6 +129,11 @@ public class Cartones {
         }
     }
 
+    /**
+     * Generates the specified number of bingo cards.
+     *
+     * @param  cantidad  the number of cards to generate
+     */
     public void generarCartones(int cantidad) {
         cartones.clear();
         limpiarCarpetaResources();
@@ -126,6 +147,12 @@ public class Cartones {
         }
     }
 
+    /**
+     * A function to search for a CartonDeBingo object by its identifier.
+     *
+     * @param  identificador  the identifier of the CartonDeBingo object to be searched
+     * @return                the CartonDeBingo object with the given identifier, or null if not found
+     */
     public CartonDeBingo buscarCartonPorIdentificador(int identificador) {
         for (CartonDeBingo carton : cartones) {
             if (carton.getIdentificadorUnico() == identificador) {
@@ -135,6 +162,11 @@ public class Cartones {
         return null;
     }
 
+    /**
+     * Retrieves the list of available identifiers.
+     *
+     * @return  the list of available identifiers
+     */
     public ArrayList<Integer> obtenerIdentificadoresDisponibles() {
         ArrayList<Integer> identificadoresDisponibles = new ArrayList<>();
 

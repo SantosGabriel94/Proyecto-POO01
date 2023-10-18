@@ -138,12 +138,23 @@ public class MenuPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
+    /**
+     * HacerJuegoNuevoActionPerformed is a private void method that is triggered when an action event occurs.
+     *
+     * @param  evt  the action event that triggers the method
+     */
     private void HacerJuegoNuevoActionPerformed(java.awt.event.ActionEvent evt) {                                                
         GenerarCartones ventana = new GenerarCartones();
         ventana.setVisible(true);
         
     }                                               
 
+    /**
+     * A description of the entire Java function.
+     *
+     * @param  evt  description of the evt parameter
+     * @return      description of return value
+     */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
         VerCartones ventana = new VerCartones();
@@ -151,12 +162,25 @@ public class MenuPrincipal extends javax.swing.JFrame {
         
     }                                        
 
+    /**
+     * A description of the entire Java function.
+     *
+     * @param  evt	description of parameter
+     * @return      description of return value
+     */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
         RegistrarJugador ventana = new RegistrarJugador();
         ventana.setVisible(true);
     }                                        
 
+    /**
+     * This method is called when the jButton4 button is clicked.
+     * It handles the event by opening a new window, EnviarCartonAJugador,
+     * and making it visible.
+     *
+     * @param  evt  the ActionEvent that triggered the button click
+     */
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
         EnviarCartonAJugador ventana = new EnviarCartonAJugador();
@@ -164,12 +188,24 @@ public class MenuPrincipal extends javax.swing.JFrame {
         
     }                                        
 
+    /**
+     * A description of the entire Java function.
+     *
+     * @param  evt  the ActionEvent object that triggered the event
+     * @return      void, this function does not return a value
+     */
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
         IniciarPartida ventana = new IniciarPartida();
         ventana.setVisible(true);        
     }                                        
 
+    /**
+     * This method is called when the jButton7 is clicked.
+     *
+     * @param  evt  the ActionEvent that triggered the event
+     * @return      void
+     */
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         // TODO add your handling code here:
          System.exit(0);

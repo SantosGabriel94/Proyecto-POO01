@@ -1,8 +1,6 @@
 package model;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -25,6 +23,12 @@ public class PartidaDeBingo {
         this.montoPremio = 0.0;
     }
 
+    /**
+     * Inicia una partida de bingo con la lista de jugadores y los nuevos cartones.
+     *
+     * @param  jugadores        la lista de jugadores que participarán en la partida
+     * @param  nuevosCartones   la lista de nuevos cartones de bingo para la partida
+     */
     public void iniciarPartida(List<Jugador> jugadores, List<CartonDeBingo> nuevosCartones) {
         if (jugadores.size() < 2) {
             System.out.println("No hay suficientes jugadores para iniciar una partida.");
@@ -46,6 +50,9 @@ public class PartidaDeBingo {
         }
     }
 
+    /**
+     * Resets the variables used in the Java function.
+     */
     private void reiniciarVariables() {
         numerosCantados.clear();
         jugadoresGanadores.clear();
@@ -53,6 +60,11 @@ public class PartidaDeBingo {
         montoPremio = 0.0;
     }
 
+    /**
+     * Initializes a new game of Bingo with the given list of bingo cards.
+     *
+     * @param  nuevosCartones  a list of new bingo cards to be added to the game
+     */
     public void iniciarNuevaPartida(List<CartonDeBingo> nuevosCartones) {
         reiniciarVariables();
         cartones.addAll(nuevosCartones);
@@ -74,6 +86,15 @@ public class PartidaDeBingo {
         anunciarGanadores();
     }
 
+    /**
+     * Finalizes the game by assigning the winning card,
+     * adding the called numbers to the list of called numbers,
+     * marking the game as finished, identifying the winning players,
+     * announcing the winners, and clearing the list of cards.
+     *
+     * @param  None
+     * @return None
+     */
     public void finalizarPartida() {
         asignarCartonGanador();
         numerosCantados.addAll(obtenerNumerosCantados());
@@ -83,6 +104,12 @@ public class PartidaDeBingo {
         cartones.clear();
     }
 
+    /**
+     * Verifies the winning bingo cards based on the specified game configuration.
+     *
+     * @param  configuracionPartida  the game configuration to be used for verification
+     * @return                       a list of winning bingo cards
+     */
     private List<CartonDeBingo> verificarCartonesGanadores(TipoPartida configuracionPartida) {
         List<CartonDeBingo> cartonesGanadores = new ArrayList<>();
     
@@ -95,12 +122,23 @@ public class PartidaDeBingo {
         return cartonesGanadores;
     }
 
+    /**
+     * Retrieves the list of numbers that have been sung.
+     *
+     * @return         	A list of integers representing the numbers that have been sung.
+     */
     private List<Integer> obtenerNumerosCantados() {
         List<Integer> numeros = new ArrayList<>();
         // Lógica para obtener los números cantados
         return numeros;
     }
 
+    /**
+     * Identifies the players who have won the game.
+     *
+     * @param  None    This function does not take any parameters.
+     * @return None    This function does not return any value.
+     */
     private void identificarJugadoresGanadores() {
         for (CartonDeBingo carton : cartones) {
             if (carton.verificarGanador(configuracionPartida)) {
@@ -118,6 +156,12 @@ public class PartidaDeBingo {
         // Lógica para asignar el cartón ganador.
     }
 
+    /**
+     * Anuncia los jugadores ganadores de la partida.
+     *
+     * @param  None  No recibe parámetros.
+     * @return       No devuelve ningún valor.
+     */
     private void anunciarGanadores() {
         if (!jugadoresGanadores.isEmpty()) {
             System.out.println("Jugadores ganadores:");

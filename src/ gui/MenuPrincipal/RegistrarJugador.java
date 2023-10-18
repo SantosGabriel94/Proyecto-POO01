@@ -137,6 +137,11 @@ public class RegistrarJugador extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * This function is called when the jButton1 is clicked.
+     *
+     * @param  evt  the ActionEvent object that represents the event
+     */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         MenuPrincipal last = new MenuPrincipal();

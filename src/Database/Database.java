@@ -7,6 +7,13 @@ import java.sql.SQLException;
 public class Database {
     private static Connection connection;
 
+    /**
+     * Connects to the database using the provided URL, username, and password.
+     *
+     * @param  url      the URL of the database
+     * @param  user     the username for authentication
+     * @param  password the password for authentication
+     */
     public static void connect(String url, String user, String password) {
         try {
             // Intenta establecer una conexión con la base de datos.
@@ -20,6 +27,10 @@ public class Database {
     
     // Otros métodos para operaciones con la base de datos
 
+    /**
+     * Closes the database connection.
+     *
+     */
     public static void close() {
         try {
             if (connection != null) {

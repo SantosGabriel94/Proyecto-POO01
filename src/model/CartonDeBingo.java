@@ -13,6 +13,12 @@ public class CartonDeBingo {
         this.jugadorAsignado = new Jugador("Sin asignar", "Sin correo", "0000000");;
     }
 
+    /**
+     * Generates a bingo card.
+     *
+     * @param  None
+     * @return None
+     */
     public void generarCarton() {
         Random rand = new Random();
         int[][] numerosCarton = new int[5][5];
@@ -37,7 +43,13 @@ public class CartonDeBingo {
         this.numeros = numerosCarton;
     }
 
-    // Verifica si un número ya existe en el cartón.
+    /**
+     * A method to check if a given number exists in the given 2D array.
+     *
+     * @param  numerosCarton  the 2D array of integers representing the carton
+     * @param  numero         the number to search for
+     * @return                true if the number exists in the carton, false otherwise
+     */
     private boolean existeNumeroEnCarton(int[][] numerosCarton, int numero) {
         for (int fila = 0; fila < 5; fila++) {
             for (int columna = 0; columna < 5; columna++) {
@@ -48,6 +60,14 @@ public class CartonDeBingo {
         }
         return false;
     }
+    
+    /**
+     * A description of the entire Java function.
+     *
+     * @param  numeros  the 2D array of numbers to be assigned to the board
+     * @throws IllegalArgumentException if the 'numeros' matrix does not have dimensions 5x5
+     * @throws IllegalArgumentException if the numbers in the board are not unique
+     */
     public void setNumeros(int[][] numeros) {
         // Lógica para asignar los números proporcionados al cartón.
         if (numeros.length == 5 && numeros[0].length == 5) {
@@ -62,6 +82,12 @@ public class CartonDeBingo {
         }
     }
 
+    /**
+     * Recorre la matriz de números del cartón y busca el número a marcar.
+     *
+     * @param  numero  el número que se desea marcar en el cartón
+     * @return         nada
+     */
     public void marcarNumero(int numero) {
         // Recorre la matriz de números del cartón y busca el número a marcar.
         for (int fila = 0; fila < 5; fila++) {
@@ -76,6 +102,12 @@ public class CartonDeBingo {
         // Si el número no se encuentra en el cartón, puedes lanzar una excepción o realizar alguna acción adicional.
     }
 
+    /**
+     * Verifies the winner based on the given game configuration.
+     *
+     * @param  configuracionPartida	the game configuration to check for the winner
+     * @return         				true if there is a winner, false otherwise
+     */
     public boolean verificarGanador(TipoPartida configuracionPartida) {
         switch (configuracionPartida) {
             case JUGAR_EN_X:
@@ -92,6 +124,11 @@ public class CartonDeBingo {
         }
     }
 
+    /**
+     * Verifies if the X player is the winner.
+     *
+     * @return true if the X player is the winner, false otherwise.
+     */
     private boolean verificarGanadorX() {
         // Verificar la diagonal principal (de izquierda a derecha).
         boolean diagonalPrincipalCompleta = true;
@@ -115,6 +152,12 @@ public class CartonDeBingo {
         return diagonalPrincipalCompleta && diagonalSecundariaCompleta;
     }
 
+    /**
+     * Recorre la matriz de números del cartón y busca el número.
+     *
+     * @param  numero    el número que se está buscando en la matriz
+     * @return           true si el número está marcado y false si no está marcado
+     */
     private boolean esNumeroMarcado(int numero) {
         // Recorre la matriz de números del cartón y busca el número.
         for (int fila = 0; fila < 5; fila++) {
@@ -129,6 +172,11 @@ public class CartonDeBingo {
         return false;
     }
 
+    /**
+     * Verifies if all four corners are marked.
+     *
+     * @return  true if all four corners are marked, false otherwise
+     */
     private boolean verificarGanadorCuatroEsquinas() {
         // Verificar si las cuatro esquinas están marcadas.
         boolean esquinaSuperiorIzquierda = esNumeroMarcado(numeros[0][0]);
@@ -140,6 +188,11 @@ public class CartonDeBingo {
         return esquinaSuperiorIzquierda && esquinaSuperiorDerecha && esquinaInferiorIzquierda && esquinaInferiorDerecha;
     }
 
+    /**
+     * Verifica si todos los números del cartón están marcados.
+     *
+     * @return true si todos los números están marcados, false si hay al menos un número no marcado.
+     */
     private boolean verificarGanadorCartonLleno() {
         // Verificar si todos los números del cartón están marcados.
         for (int fila = 0; fila < 5; fila++) {
@@ -154,6 +207,11 @@ public class CartonDeBingo {
         return true;
     }
 
+    /**
+     * Verificar si los números en las esquinas y en el centro están marcados.
+     *
+     * @return true si el cartón es ganador en caso de "Jugar en Z", false si el cartón no es ganador.
+     */
     private boolean verificarGanadorZ() {
         // Verificar si los números en las esquinas y en el centro están marcados.
         if (esNumeroMarcado(numeros[0][0]) && esNumeroMarcado(numeros[0][4]) &&
@@ -165,7 +223,13 @@ public class CartonDeBingo {
         return false; // El cartón no es ganador.
     }
 
-    // Método para verificar si todos los números en el cartón son únicos.
+
+    /**
+     * Checks if the numbers in the given matrix are unique.
+     *
+     * @param  numeros   the matrix of numbers to check
+     * @return           true if all numbers are unique, false otherwise
+     */
     private boolean sonNumerosUnicos(int[][] numeros) {
         // Use a boolean array to keep track of seen numbers.
         boolean[] seenNumbers = new boolean[101];
