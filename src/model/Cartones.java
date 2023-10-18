@@ -1,13 +1,14 @@
 package model;
 
-import java.io.File;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 public class Cartones {
     private static ArrayList<CartonDeBingo> cartones;
@@ -19,16 +20,16 @@ public class Cartones {
     /**
      * Adds a CartonDeBingo to the list of cartones.
      *
-     * @param  carton  the CartonDeBingo to be added
+     * @param carton the CartonDeBingo to be added
      */
-    public void añadirCarton(CartonDeBingo carton) {
+    public void anadirCarton(CartonDeBingo carton) {
         cartones.add(carton);
     }
 
     /**
      * Generates an image of a bingo card.
      *
-     * @param  carton   The bingo card object to be used for generating the image.
+     * @param carton The bingo card object to be used for generating the image.
      */
     public void generarImagenCarton(CartonDeBingo carton) {
         try {
@@ -95,7 +96,8 @@ public class Cartones {
                 }
             }
 
-            // Guardar la imagen en un archivo con el nombre del identificador único del cartón.
+            // Guardar la imagen en un archivo con el nombre del identificador único del
+            // cartón.
             int identificador = carton.getIdentificadorUnico();
             String nombreArchivo = identificador + ".png";
             String rutaCarpetaResources = "resources/";
@@ -109,8 +111,8 @@ public class Cartones {
     /**
      * Deletes all files in the "resources" folder.
      *
-     * @param  None  This function does not have any parameters.
-     * @return None  This function does not return anything.
+     * @param None This function does not have any parameters.
+     * @return None This function does not return anything.
      */
     public void limpiarCarpetaResources() {
         String rutaCarpetaResources = "resources";
@@ -132,7 +134,7 @@ public class Cartones {
     /**
      * Generates the specified number of bingo cards.
      *
-     * @param  cantidad  the number of cards to generate
+     * @param cantidad the number of cards to generate
      */
     public void generarCartones(int cantidad) {
         cartones.clear();
@@ -150,8 +152,10 @@ public class Cartones {
     /**
      * A function to search for a CartonDeBingo object by its identifier.
      *
-     * @param  identificador  the identifier of the CartonDeBingo object to be searched
-     * @return                the CartonDeBingo object with the given identifier, or null if not found
+     * @param identificador the identifier of the CartonDeBingo object to be
+     *                      searched
+     * @return the CartonDeBingo object with the given identifier, or null if not
+     *         found
      */
     public CartonDeBingo buscarCartonPorIdentificador(int identificador) {
         for (CartonDeBingo carton : cartones) {
@@ -165,7 +169,7 @@ public class Cartones {
     /**
      * Retrieves the list of available identifiers.
      *
-     * @return  the list of available identifiers
+     * @return the list of available identifiers
      */
     public ArrayList<Integer> obtenerIdentificadoresDisponibles() {
         ArrayList<Integer> identificadoresDisponibles = new ArrayList<>();

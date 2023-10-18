@@ -1,8 +1,6 @@
 {
     "java.debug.settings.onBuildFailureProceed": true,
     "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "c:\\Users\\usuario 2\\Downloads\\javax.mail.jar",
-        "c:\\Users\\usuario 2\\Downloads\\javax.activation-1.2.0.jar"
+        "lib/**/*.jar"
     ]
 }

@@ -7,14 +7,15 @@ public class Jugadores {
     private List<Jugador> jugadores = new ArrayList<>();
 
     public Jugadores() {
-        // No se necesita inicializar la lista aquí, ya que se inicializa en la declaración.
+        // No se necesita inicializar la lista aquí, ya que se inicializa en la
+        // declaración.
     }
 
     public void guardarJugadoresEnBD() {
         // Lógica para guardar todos los jugadores en la base de datos.
     }
 
-    public void añadirJugador(Jugador jugador) {
+    public void anadirJugador(Jugador jugador) {
         jugadores.add(jugador);
     }
 
@@ -29,8 +30,8 @@ public class Jugadores {
     /**
      * Searches for a player by their ID number.
      *
-     * @param  cedula  the ID number of the player
-     * @return         the player object if found, null otherwise
+     * @param cedula the ID number of the player
+     * @return the player object if found, null otherwise
      */
     public Jugador buscarJugadorPorCedula(String cedula) {
         for (Jugador jugador : jugadores) {
@@ -41,4 +42,3 @@ public class Jugadores {
         return null; // Retorna null si no se encuentra ningún jugador con esa cédula
     }
 }
-

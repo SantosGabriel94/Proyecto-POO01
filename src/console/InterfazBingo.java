@@ -1,5 +1,6 @@
 package console;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,15 +12,15 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.image.BufferedImage;
+
+import model.CartonDeBingo;
+import model.Cartones;
+import model.CorreoElectronico;
 import model.Jugador;
 import model.Jugadores;
 import model.PartidaDeBingo;
 import model.RegistroDePartidas;
 import model.TipoPartida;
-import model.CartonDeBingo;
-import model.Cartones;
-import model.CorreoElectronico;
 
 public class InterfazBingo {
     private RegistroDePartidas registroPartidas;
@@ -131,9 +132,9 @@ public class InterfazBingo {
         Jugador manuelMurillo = new Jugador("Manuel Murillo", "erirodriguez@estudiantec.cr", "31025321");
         Jugador erickRojas = new Jugador("Erick Rojas", "erick.rodriguez2@aiesec.net", "303250410");
 
-        jugadores.añadirJugador(luisSoto);
-        jugadores.añadirJugador(manuelMurillo);
-        jugadores.añadirJugador(erickRojas);
+        jugadores.anadirJugador(luisSoto);
+        jugadores.anadirJugador(manuelMurillo);
+        jugadores.anadirJugador(erickRojas);
     }
 
     private void generarCartones() {
@@ -245,7 +246,7 @@ public class InterfazBingo {
         String cedula = scanner.nextLine();
 
         Jugador nuevoJugador = new Jugador(nombre, correo, cedula);
-        jugadores.añadirJugador(nuevoJugador);
+        jugadores.anadirJugador(nuevoJugador);
 
         System.out.println("Jugador registrado con éxito.");
     }
@@ -305,8 +306,9 @@ public class InterfazBingo {
             correoElectronico.enviarCorreoConCartones(jugador.getCorreoElectronico(), "Cartones de Bingo",
                     cuerpoCorreo.toString(), cartonesEnviados);
 
-            System.out.println("Se han enviado los cartones al jugador " + jugador.getNombre() + " a su dirección de correo: "
-                    + jugador.getCorreoElectronico());
+            System.out.println(
+                    "Se han enviado los cartones al jugador " + jugador.getNombre() + " a su dirección de correo: "
+                            + jugador.getCorreoElectronico());
         } catch (Exception e) {
             System.out.println("Se ha producido un error al enviar el correo electrónico.");
             e.printStackTrace();
@@ -391,7 +393,8 @@ public class InterfazBingo {
             if (scanner.hasNextDouble()) {
                 montoPremio = scanner.nextDouble();
                 if (montoPremio <= 0) {
-                    System.out.println("El monto del premio debe ser un valor positivo. Por favor, ingrese un monto válido.");
+                    System.out.println(
+                            "El monto del premio debe ser un valor positivo. Por favor, ingrese un monto válido.");
                 }
             } else {
                 System.out.println("Entrada no válida. Ingrese un monto válido.");
@@ -399,7 +402,8 @@ public class InterfazBingo {
             }
         }
 
-        // Aquí puedes usar las variables configuracionJuego y montoPremio según sea necesario.
+        // Aquí puedes usar las variables configuracionJuego y montoPremio según sea
+        // necesario.
     }
 
     private void generarWordCloud() {
