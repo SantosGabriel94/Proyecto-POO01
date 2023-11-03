@@ -1,8 +1,10 @@
 package console;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +29,23 @@ public class InterfazBingo {
     private PartidaDeBingo partida;
     private Jugadores jugadores;
     private Cartones cartones;
+    private Connection connection; // Conexión a la base de datos
 
     public InterfazBingo() {
         registroPartidas = new RegistroDePartidas();
         partida = new PartidaDeBingo(TipoPartida.CARTON_LLENO, registroPartidas.getPartidas().size() + 1);
         jugadores = new Jugadores();
         cartones = new Cartones();
+        
+        // Inicializar la conexión a la base de datos
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:BD_BINGO.db");
+            System.out.println("Conexión a la base de datos establecida.");
+        } catch (SQLException e) {
+            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
+        }
     }
-
+    
     public void mostrarMenu() {
         Scanner scanner = new Scanner(System.in);
         int opcion;
@@ -413,4 +424,21 @@ public class InterfazBingo {
     private void generarEstadisticas() {
         System.out.println("Generando estadísticas...");
     }
+
+    public void closeConnection() {
+        try {
+            if (connection != null) {
+                connection.close();
+                System.out.println("Conexión a la base de datos cerrada.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión a la base de datos: " + e.getMessage());
+        }
+    }
+     public static void main(String[] args) {
+        InterfazBingo bingoApp = new InterfazBingo();
+        bingoApp.mostrarMenu();
+        bingoApp.closeConnection(); // Cerrar la conexión a la base de datos al finalizar
+    }
+
 }
